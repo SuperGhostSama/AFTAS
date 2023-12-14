@@ -1,4 +1,8 @@
 package com.example.aftas.repository;
 
-public interface LevelRepository {
+import com.example.aftas.model.Level;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface LevelRepository extends JpaRepository<Level, Long> {
+
 }

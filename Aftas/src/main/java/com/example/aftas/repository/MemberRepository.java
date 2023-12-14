@@ -1,4 +1,7 @@
 package com.example.aftas.repository;
 
-public interface MemberRepository {
+import com.example.aftas.model.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
 }

@@ -1,4 +1,9 @@
 package com.example.aftas.repository;
 
-public interface RankingRepository {
+import com.example.aftas.model.RankId;
+import com.example.aftas.model.Ranking;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RankingRepository extends JpaRepository<Ranking, RankId> {
+
 }

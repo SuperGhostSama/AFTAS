@@ -20,4 +20,6 @@ public class RankId implements Serializable {
 
     @Column(name = "competition_id")
     private Long competitionId;
+
+
 }

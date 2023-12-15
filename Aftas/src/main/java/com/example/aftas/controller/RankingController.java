@@ -17,7 +17,7 @@ public class RankingController {
         this.rankingService = rankingService;
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity getRankingById(@PathVariable Long id) {
         Ranking ranking = rankingService.getRankingById(id);
         return ResponseMessage.ok(ranking,"Success");

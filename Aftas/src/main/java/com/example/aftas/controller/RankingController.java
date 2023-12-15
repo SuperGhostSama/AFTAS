@@ -41,6 +41,11 @@ public class RankingController {
         return ResponseMessage.ok(null,"Ranking deleted successfully");
     }
 
+    @PostMapping("/register")
+    public ResponseEntity registerMemberForCompetition(@Valid @RequestBody Ranking ranking) {
+        Ranking registeredRanking = rankingService.registerMemberForCompetition(ranking);
+        return ResponseMessage.created(registeredRanking, "Member registered successfully");
 
+    }
 
 }

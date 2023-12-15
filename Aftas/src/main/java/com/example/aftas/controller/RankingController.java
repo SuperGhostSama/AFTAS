@@ -2,6 +2,7 @@ package com.example.aftas.controller;
 
 import com.example.aftas.dto.UpdateRankingRequestDTO;
 import com.example.aftas.config.handlers.response.ResponseMessage;
+import com.example.aftas.model.RankId;
 import com.example.aftas.model.Ranking;
 import com.example.aftas.service.RankingService;
 import jakarta.validation.Valid;
@@ -17,11 +18,6 @@ public class RankingController {
         this.rankingService = rankingService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity getRankingById(@PathVariable Long id) {
-        Ranking ranking = rankingService.getRankingById(id);
-        return ResponseMessage.ok(ranking,"Success");
-    }
 
     @GetMapping("/{competitionId}/{memberId}")
     public ResponseEntity getRankingsByMemberIdAndCompetitionId(@PathVariable Long competitionId, @PathVariable Long memberId) {
@@ -29,17 +25,12 @@ public class RankingController {
         return ResponseMessage.ok(ranking,"Success");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity updateRanking(@Valid @RequestBody UpdateRankingRequestDTO updateRankingRequestDTO, @PathVariable Long id) {
-        Ranking ranking1 = rankingService.updateRanking(updateRankingRequestDTO.toRanking(), id);
+    @PutMapping("/{competitionId}/{memberId}")
+    public ResponseEntity updateRanking(@Valid @RequestBody UpdateRankingRequestDTO updateRankingRequestDTO, @PathVariable Long competitionId, @PathVariable Long memberId) {
+        Ranking ranking1 = rankingService.updateRanking(updateRankingRequestDTO.toRanking(), competitionId , memberId);
         return ResponseMessage.ok(ranking1,"Success");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteRanking(@PathVariable Long id) {
-        rankingService.deleteRanking(id);
-        return ResponseMessage.ok(null,"Ranking deleted successfully");
-    }
 
     @PostMapping("/register")
     public ResponseEntity registerMemberForCompetition(@Valid @RequestBody Ranking ranking) {

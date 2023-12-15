@@ -29,7 +29,7 @@ public class RankingServiceImpl implements RankingService {
 
         Long memberId = ranking.getMember().getId();
 
-//         Check if the competition exists
+        // Check if the competition exists
         Competition competition = competitionService.getCompetitionById(competitionId);
 
         // Check if the member exists
@@ -56,28 +56,22 @@ public class RankingServiceImpl implements RankingService {
         }
         return ranking;
     }
+
+
     @Override
-    public Ranking getRankingById(Long id) {
-        return rankingRepository.findById(id).orElseThrow(() -> new RuntimeException("Ranking id " + id + " not found"));
-    }
-    @Override
-    public Ranking updateRanking(Ranking ranking, Long id) {
-        Ranking existingRanking = getRankingById(id);
+    public Ranking updateRanking(Ranking ranking, Long competitionId, Long memberId) {
+        Ranking existingRanking = getRankingsByMemberIdAndCompetitionId(competitionId,memberId);
         existingRanking.setRank(ranking.getRank());
         existingRanking.setScore(ranking.getScore());
         return rankingRepository.save(existingRanking);
     }
 
     @Override
-    public Ranking updateRankingScore(Ranking ranking, Long id) {
-        Ranking existingRanking = getRankingById(id);
+    public Ranking updateRankingScore(Ranking ranking, Long competitionId, Long memberId) {
+        Ranking existingRanking = getRankingsByMemberIdAndCompetitionId(competitionId,memberId);
         existingRanking.setScore(ranking.getScore()+existingRanking.getScore());
         return rankingRepository.save(existingRanking);
     }
 
-    @Override
-    public void deleteRanking(Long id) {
-        getRankingById(id);
-        rankingRepository.deleteById(id);
-    }
+
 }

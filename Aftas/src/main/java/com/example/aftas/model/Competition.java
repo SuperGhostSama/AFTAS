@@ -24,6 +24,10 @@ import java.util.Objects;
 public class Competition {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String code;
 
     @Temporal(TemporalType.DATE)

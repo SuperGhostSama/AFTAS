@@ -30,8 +30,8 @@ public class Ranking {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "competition_code")
-    @MapsId("competitionCode")
+    @JoinColumn(name = "competition_id")
+    @MapsId("competitionId")
     private Competition competition;
 
     @CreationTimestamp

@@ -1,4 +1,10 @@
 package com.example.aftas.repository;
 
-public interface CompetitionRepository {
+import com.example.aftas.model.Competition;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDate;
+
+public interface CompetitionRepository extends JpaRepository<Competition, Long> {
+    Competition findByDate(LocalDate date);
 }

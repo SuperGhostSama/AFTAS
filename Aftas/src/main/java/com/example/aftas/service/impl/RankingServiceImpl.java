@@ -59,6 +59,15 @@ public class RankingServiceImpl implements RankingService {
 
         // Set the ID and save the ranking
         ranking.setId(new RankId(competition.getId(), member.getId()));
+
+        // Check if it's the first member registering for the competition
+        if (competition.getRanking().isEmpty()) {
+            ranking.setRank(1); // Set the highest rank for the first member
+        } else {
+            // Set the lowest rank for subsequent members
+            ranking.setRank(competition.getRanking().stream().mapToInt(Ranking::getRank).max().orElse(0) + 1);
+        }
+
         rankingRepository.save(ranking);
 
         // Update the numberOfParticipants in the Competition entity
@@ -68,6 +77,7 @@ public class RankingServiceImpl implements RankingService {
 
         return ranking;
     }
+
 
 
     @Override

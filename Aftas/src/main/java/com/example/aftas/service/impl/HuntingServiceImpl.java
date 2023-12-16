@@ -6,6 +6,7 @@ import com.example.aftas.repository.HuntingRepository;
 import com.example.aftas.service.HuntingService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,29 +36,37 @@ public class HuntingServiceImpl implements HuntingService {
         Long memberId = hunting.getMember().getId();
         Long fishId = hunting.getFish().getId();
 
-        // check if competition exists
+        // Check if competition exists
         Competition competition = competitionService.getCompetitionById(competitionId);
 
-        // check if member exists
+        // Check if the competition has ended
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime competitionEndTime = LocalDateTime.of(competition.getDate(), competition.getEndTime());
+
+        if (currentDateTime.isAfter(competitionEndTime)) {
+            throw new RuntimeException("The competition has ended. No more hunting results can be added.");
+        }
+
+        // Check if member exists
         Member member = memberService.getMemberById(memberId);
 
-        // check if fish exists
+        // Check if fish exists
         Fish fish = fishService.getFishById(fishId);
 
-        // check if Member has already participated in this competition
+        // Check if the member has already participated in this competition
         rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
 
-        // check if fish has level
+        // Check if fish has a level
         if (fish.getLevel() == null) {
             throw new ResourceNotFoundException("Fish id " + fishId + " has no level");
         }
 
-        // check weight of fish must be greater than average weight
+        // Check if the weight of the fish is greater than the average weight
         if (hunting.getFish().getWeight() < fish.getWeight()) {
             throw new ResourceNotFoundException("Weight of fish must be greater than average weight");
         }
 
-        // check if fish has already been caught by this member in this competition if yes increment the number of fish caught
+        // Check if the fish has already been caught by this member in this competition; if yes, increment the number of fish caught
         Hunting existingHunting = huntingRepository.findByCompetitionIdAndMemberIdAndFishId(competitionId, memberId, fishId);
 
         Ranking ranking = rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
@@ -76,6 +85,7 @@ public class HuntingServiceImpl implements HuntingService {
 
         return hunting;
     }
+
 
 
     @Override

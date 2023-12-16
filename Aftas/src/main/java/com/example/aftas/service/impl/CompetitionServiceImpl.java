@@ -42,24 +42,31 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     public Competition addCompetition(Competition competition) {
 
-        // here i want to check that Every day there can be only one competition
-        Competition competition1 = competitionRepository.findByDate(competition.getDate());
-        if (competition1 != null) {
+        // competition date is not in the past
+        LocalDate currentDate = LocalDate.now();
+        if (competition.getDate().isBefore(currentDate)) {
+            throw new OperationException("Competition date cannot be in the past");
+        }
+
+        // Check if there is already a competition on the given date
+        Competition existingCompetition = competitionRepository.findByDate(competition.getDate());
+        if (existingCompetition != null) {
             throw new OperationException("There is already a competition on " + competition.getDate());
         }
 
-        // here i want to check that Competition start time must be before end time
+        // Validate that the competition start time is before the end time
         if (competition.getStartTime().isAfter(competition.getEndTime())) {
             throw new OperationException("Start time must be before end time");
         }
 
-        // here i want to generate a unique code for the competition from that date and location  pattern: ims-22-12-23, ims is the third first letters of the location
+        // Generate a unique code
         String code = generateCode(competition.getLocation(), competition.getDate());
         competition.setCode(code);
 
-        return competitionRepository.save(competition);
 
+        return competitionRepository.save(competition);
     }
+
 
     public static String generateCode(String location, LocalDate date) {
         String locationCode = location.substring(0, 3).toLowerCase();

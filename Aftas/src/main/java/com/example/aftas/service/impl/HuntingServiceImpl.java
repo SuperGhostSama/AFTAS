@@ -66,7 +66,7 @@ public class HuntingServiceImpl implements HuntingService {
             throw new ResourceNotFoundException("Weight of fish must be greater than average weight");
         }
 
-        // Check if the fish has already been caught by this member in this competition; if yes, increment the number of fish caught
+        // Check if the fish has already been caught by this member in this competition
         Hunting existingHunting = huntingRepository.findByCompetitionIdAndMemberIdAndFishId(competitionId, memberId, fishId);
 
         Ranking ranking = rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
@@ -77,6 +77,8 @@ public class HuntingServiceImpl implements HuntingService {
             existingHunting.setNumberOfFish(existingHunting.getNumberOfFish() + 1);
             huntingRepository.save(existingHunting);
         } else {
+            // Fish has not been caught, so add a new hunting record with numberOfFish set to 1
+            hunting.setNumberOfFish(1);
             huntingRepository.save(hunting);
         }
 
@@ -85,6 +87,7 @@ public class HuntingServiceImpl implements HuntingService {
 
         return hunting;
     }
+
 
 
 

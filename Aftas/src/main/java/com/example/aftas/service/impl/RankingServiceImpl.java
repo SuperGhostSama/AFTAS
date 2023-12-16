@@ -1,5 +1,6 @@
 package com.example.aftas.service.impl;
 
+import com.example.aftas.dto.TopRankingDTO;
 import com.example.aftas.model.Competition;
 import com.example.aftas.model.Member;
 import com.example.aftas.model.RankId;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -101,5 +103,8 @@ public class RankingServiceImpl implements RankingService {
         rankingRepository.saveAll(rankings);
     }
 
-
+    @Override
+    public List<TopRankingDTO> findTop3ByCompetitionIdOrderByScoreDesc(Long competitionId) {
+        return rankingRepository.findTop3ByCompetitionIdOrderByScoreDesc(competitionId);
+    }
 }

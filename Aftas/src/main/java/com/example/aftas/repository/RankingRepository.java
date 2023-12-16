@@ -1,5 +1,6 @@
 package com.example.aftas.repository;
 
+import com.example.aftas.dto.TopRankingDTO;
 import com.example.aftas.model.RankId;
 import com.example.aftas.model.Ranking;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,8 @@ public interface RankingRepository extends JpaRepository<Ranking, RankId> {
 
     @Query("SELECT COUNT(DISTINCT r.member.id) FROM Ranking r WHERE r.id.competitionId = :competitionId")
     int countDistinctByCompetitionId(@Param("competitionId") Long competitionId);
+
+    @Query("SELECT new com.example.aftas.dto.TopRankingDTO(r.rank, r.score, r.member.name) FROM Ranking r WHERE r.id.competitionId = :competitionId ORDER BY r.score DESC")
+    List<TopRankingDTO> findTop3ByCompetitionIdOrderByScoreDesc(@Param("competitionId") Long competitionId);
+
 }

@@ -4,6 +4,7 @@ import com.example.aftas.model.Competition;
 import com.example.aftas.model.Member;
 import com.example.aftas.model.RankId;
 import com.example.aftas.model.Ranking;
+import com.example.aftas.repository.CompetitionRepository;
 import com.example.aftas.repository.RankingRepository;
 import com.example.aftas.service.RankingService;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,13 @@ import java.util.stream.IntStream;
 @Service
 public class RankingServiceImpl implements RankingService {
     private final RankingRepository rankingRepository;
+    private  final CompetitionRepository competitionRepository;
     private final MemberServiceImpl memberService;
     private final CompetitionServiceImpl competitionService;
 
-    public RankingServiceImpl(RankingRepository rankingRepository, MemberServiceImpl memberService, CompetitionServiceImpl competitionService) {
+    public RankingServiceImpl(RankingRepository rankingRepository, CompetitionRepository competitionRepository, MemberServiceImpl memberService, CompetitionServiceImpl competitionService) {
         this.rankingRepository = rankingRepository;
+        this.competitionRepository = competitionRepository;
         this.memberService = memberService;
         this.competitionService = competitionService;
     }
@@ -28,7 +31,6 @@ public class RankingServiceImpl implements RankingService {
     public Ranking registerMemberForCompetition(Ranking ranking) {
 
         Long competitionId = ranking.getCompetition().getId();
-
         Long memberId = ranking.getMember().getId();
 
         // Check if the competition exists
@@ -42,9 +44,18 @@ public class RankingServiceImpl implements RankingService {
             throw new RuntimeException("Member id " + memberId + " is already registered for the competition");
         }
 
+        // Set the ID and save the ranking
         ranking.setId(new RankId(competition.getId(), member.getId()));
-        return rankingRepository.save(ranking);
+        rankingRepository.save(ranking);
+
+        // Update the numberOfParticipants in the Competition entity
+        int numberOfParticipants = rankingRepository.countDistinctByCompetitionId(competitionId);
+        competition.setNumberOfParticipants(numberOfParticipants);
+        competitionRepository.save(competition);
+
+        return ranking;
     }
+
 
     @Override
     public Ranking getRankingsByMemberIdAndCompetitionId(Long competitionId, Long memberId) {

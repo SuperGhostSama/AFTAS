@@ -10,6 +10,8 @@ import com.example.aftas.service.RankingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -35,6 +37,15 @@ public class RankingServiceImpl implements RankingService {
 
         // Check if the competition exists
         Competition competition = competitionService.getCompetitionById(competitionId);
+
+        // Check if registration is allowed (1 hour before start time)
+        LocalTime oneHourBeforeStartTime = competition.getStartTime().minusHours(1);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime registrationDeadline = LocalDateTime.of(competition.getDate(), oneHourBeforeStartTime);
+
+        if (currentDateTime.isAfter(registrationDeadline)) {
+            throw new RuntimeException("Registration is not allowed. Less than 1 hour left to the competition start time.");
+        }
 
         // Check if the member exists
         Member member = memberService.getMemberById(memberId);

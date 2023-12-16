@@ -11,4 +11,6 @@ public interface MemberService {
     List<Member> findByMembershipNumberOrIdentityNumberOrNameOrFamilyName(String searchTerm);
     Member updateMember(Member member, Long id);
     void deleteMember(Long id);
+    List<Member> getMembersByCompetitionId(Long competitionId);
+
 }

@@ -75,5 +75,10 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/byCompetition/{competitionId}")
+    public ResponseEntity<List<Member>> getMembersByCompetitionId(@PathVariable Long competitionId) {
+        List<Member> members = memberService.getMembersByCompetitionId(competitionId);
+        return ResponseEntity.ok(members);
+    }
 
 }

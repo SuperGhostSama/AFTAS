@@ -71,7 +71,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    // Helper method to generate a random integer within a specified range
+    @Override
+    public List<Member> getMembersByCompetitionId(Long competitionId) {
+        // Implement the logic to fetch members by competition ID
+        return memberRepository.findMembersByCompetitionId(competitionId);
+    }
+
     private int generateRandomMembershipNumber() {
         Random random = new Random();
         return random.nextInt(1000000) + 1;

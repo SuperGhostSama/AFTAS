@@ -6,6 +6,7 @@ import com.example.aftas.service.MemberService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -33,9 +34,13 @@ public class MemberServiceImpl implements MemberService {
 
         member.setAccessDate(java.time.LocalDate.now());
 
-//        member.setIdentityNumber(java.util.UUID.randomUUID().toString());
+        // Generate a random membership number and check for uniqueness
+        int randomMembershipNumber;
+        do {
+            randomMembershipNumber = generateRandomMembershipNumber();
+        } while (memberRepository.existsByMembershipNumber(randomMembershipNumber));
 
-        member.setMembershipNumber((int) (memberRepository.count() + 1));
+        member.setMembershipNumber(randomMembershipNumber);
         return memberRepository.save(member);
     }
 
@@ -63,5 +68,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+
+    // Helper method to generate a random integer within a specified range
+    private int generateRandomMembershipNumber() {
+        Random random = new Random();
+        return random.nextInt(1000000) + 1;
     }
 }

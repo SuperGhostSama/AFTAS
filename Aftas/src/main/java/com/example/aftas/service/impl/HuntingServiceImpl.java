@@ -88,9 +88,6 @@ public class HuntingServiceImpl implements HuntingService {
         return hunting;
     }
 
-
-
-
     @Override
     public List<Hunting> getHuntingsByCompetition(Long competitionId) {
         return huntingRepository.findByCompetitionId(competitionId);

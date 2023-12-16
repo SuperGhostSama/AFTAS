@@ -61,15 +61,6 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     }
 
-    public static String generateCode(String location, Date date) {
-        String locationCode = location.substring(0, 3).toLowerCase();
-
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yy-MM-dd");
-        String formattedDate = dateFormatter.format(date);
-
-        return locationCode + "-" + formattedDate;
-    }
-
     public static String generateCode(String location, LocalDate date) {
         String locationCode = location.substring(0, 3).toLowerCase();
 

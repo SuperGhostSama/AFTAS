@@ -9,5 +9,5 @@ public interface RankingService {
     public Ranking registerMemberForCompetition(Ranking ranking);
     Ranking getRankingsByMemberIdAndCompetitionId(Long competitionId, Long memberId);
     Ranking updateRanking(Ranking ranking, Long competitionId, Long memberId);
-    Ranking updateRankingScore(Ranking ranking, Long competitionId, Long memberId);
+    void calculateAndSetRanks(Long competitionId);
 }

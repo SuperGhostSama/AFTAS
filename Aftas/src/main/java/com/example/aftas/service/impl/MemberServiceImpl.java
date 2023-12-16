@@ -60,7 +60,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(existingMember);
     }
 
-
     @Override
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);

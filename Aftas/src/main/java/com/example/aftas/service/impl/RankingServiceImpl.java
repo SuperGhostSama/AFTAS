@@ -9,6 +9,8 @@ import com.example.aftas.service.RankingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class RankingServiceImpl implements RankingService {
@@ -44,8 +46,6 @@ public class RankingServiceImpl implements RankingService {
         return rankingRepository.save(ranking);
     }
 
-
-
     @Override
     public Ranking getRankingsByMemberIdAndCompetitionId(Long competitionId, Long memberId) {
         memberService.getMemberById(memberId);
@@ -57,7 +57,6 @@ public class RankingServiceImpl implements RankingService {
         return ranking;
     }
 
-
     @Override
     public Ranking updateRanking(Ranking ranking, Long competitionId, Long memberId) {
         Ranking existingRanking = getRankingsByMemberIdAndCompetitionId(competitionId,memberId);
@@ -66,11 +65,18 @@ public class RankingServiceImpl implements RankingService {
         return rankingRepository.save(existingRanking);
     }
 
+
     @Override
-    public Ranking updateRankingScore(Ranking ranking, Long competitionId, Long memberId) {
-        Ranking existingRanking = getRankingsByMemberIdAndCompetitionId(competitionId,memberId);
-        existingRanking.setScore(ranking.getScore()+existingRanking.getScore());
-        return rankingRepository.save(existingRanking);
+    public void calculateAndSetRanks(Long competitionId) {
+        // Retrieve all rankings for the specified competition
+        List<Ranking> rankings = rankingRepository.findAllByCompetitionIdOrderByScoreDesc(competitionId);
+
+        // Assign ranks based on scores starting from 1
+        IntStream.range(0, rankings.size())
+                .forEach(index -> rankings.get(index).setRank(index + 1));
+
+        // Save the updated rankings with ranks
+        rankingRepository.saveAll(rankings);
     }
 
 

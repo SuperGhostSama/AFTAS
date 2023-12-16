@@ -34,37 +34,49 @@ public class HuntingServiceImpl implements HuntingService {
         Long competitionId = hunting.getCompetition().getId();
         Long memberId = hunting.getMember().getId();
         Long fishId = hunting.getFish().getId();
-        // check if competition exist
+
+        // check if competition exists
         Competition competition = competitionService.getCompetitionById(competitionId);
-        // check if member exist
+
+        // check if member exists
         Member member = memberService.getMemberById(memberId);
-        // check if fish exist
+
+        // check if fish exists
         Fish fish = fishService.getFishById(fishId);
+
         // check if Member has already participated in this competition
         rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
+
         // check if fish has level
         if (fish.getLevel() == null) {
             throw new ResourceNotFoundException("Fish id " + fishId + " has no level");
         }
+
         // check weight of fish must be greater than average weight
         if (hunting.getFish().getWeight() < fish.getWeight()) {
             throw new ResourceNotFoundException("Weight of fish must be greater than average weight");
         }
-        // check if fish has already been caught by this member in this competition if yes acquirement the number of fish caught
-        Hunting existingHunting = huntingRepository.findByCompetitionIdAndMemberIdAndFishId(competitionId, memberId, fishId);
 
+        // check if fish has already been caught by this member in this competition if yes increment the number of fish caught
+        Hunting existingHunting = huntingRepository.findByCompetitionIdAndMemberIdAndFishId(competitionId, memberId, fishId);
 
         Ranking ranking = rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
         ranking.setScore(ranking.getScore() + fish.getLevel().getPoint());
         rankingService.updateRanking(ranking, competitionId, memberId);
 
-        if(existingHunting != null) {
+        if (existingHunting != null) {
             existingHunting.setNumberOfFish(existingHunting.getNumberOfFish() + 1);
-            return huntingRepository.save(existingHunting);
+            huntingRepository.save(existingHunting);
         } else {
-            return huntingRepository.save(hunting);
+            huntingRepository.save(hunting);
         }
+
+        // Recalculate and set ranks after updating the scores
+        rankingService.calculateAndSetRanks(competitionId);
+
+        return hunting;
     }
+
 
     @Override
     public List<Hunting> getHuntingsByCompetition(Long competitionId) {

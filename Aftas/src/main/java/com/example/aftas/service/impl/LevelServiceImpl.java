@@ -17,6 +17,7 @@ public class LevelServiceImpl implements LevelService {
     public LevelServiceImpl(LevelRepository levelRepository) {
         this.levelRepository = levelRepository;
     }
+
     @Override
     public Level getLevelById(Long id) {
         return levelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Level id " + id + " not found"));

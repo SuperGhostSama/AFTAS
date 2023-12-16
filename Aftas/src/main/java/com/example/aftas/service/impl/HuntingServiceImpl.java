@@ -113,7 +113,44 @@ public class HuntingServiceImpl implements HuntingService {
 
     @Override
     public void deleteHunting(Long id) {
-        getHuntingById(id);
+        Hunting huntingToDelete = getHuntingById(id);
+        Long competitionId = huntingToDelete.getCompetition().getId();
+        Long memberId = huntingToDelete.getMember().getId();
+        int numberOfFish = huntingToDelete.getNumberOfFish();
+
+        // Check if competition has ended
+        Competition competition = competitionService.getCompetitionById(competitionId);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime competitionEndTime = LocalDateTime.of(competition.getDate(), competition.getEndTime());
+
+        if (currentDateTime.isAfter(competitionEndTime)) {
+            throw new RuntimeException("The competition has ended. No more hunting results can be deleted.");
+        }
+
+        // Check if member exists
+        Member member = memberService.getMemberById(memberId);
+
+        // Check if the member has already participated in this competition
+        rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
+
+        // Check if the hunting record exists
+        Hunting existingHunting = huntingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hunting id " + id + " not found"));
+
+        // Check if the number of fish caught is greater than 0
+        if (numberOfFish > 0) {
+            // Reduce the score by the points associated with the fish's level
+            Ranking ranking = rankingService.getRankingsByMemberIdAndCompetitionId(competitionId, memberId);
+            int pointsToDeduct = numberOfFish * existingHunting.getFish().getLevel().getPoint();
+            ranking.setScore(Math.max(0, ranking.getScore() - pointsToDeduct));
+            rankingService.updateRanking(ranking, competitionId, memberId);
+        }
+
+        // Delete the hunting record
         huntingRepository.deleteById(id);
+
+        // Recalculate and set ranks after updating the scores
+        rankingService.calculateAndSetRanks(competitionId);
     }
+
 }

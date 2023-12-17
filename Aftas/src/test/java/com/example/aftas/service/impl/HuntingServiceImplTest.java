@@ -70,4 +70,85 @@ class HuntingServiceImplTest {
 
     }
 
+    @Test
+    void testAddHuntingResult_Successful_ExistingRanking() {
+
+        Competition competition = new Competition();
+        competition.setId(1L);
+
+        Member member = new Member();
+        member.setId(2L);
+
+        Fish fish = new Fish();
+        fish.setId(3L);
+
+        Hunting hunting = new Hunting();
+        hunting.setCompetition(competition);
+        hunting.setMember(member);
+        hunting.setFish(fish);
+
+        // Mock the behavior of the dependencies
+        when(memberService.getMemberById(2L)).thenReturn(member);
+        when(fishService.getFishById(3L)).thenReturn(fish);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+        when(huntingRepository.findByCompetitionIdAndMemberIdAndFishId(1L, 2L, 3L)).thenReturn(null);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+
+        Hunting result = huntingService.addHuntingResult(hunting);
+        assertNotNull(result);
+
+    }
+
+    @Test
+    void testAddHuntingResult_HuntingResultAlreadyExists() {
+
+        Competition competition = new Competition();
+        competition.setId(1L);
+
+        Member member = new Member();
+        member.setId(2L);
+
+        Fish fish = new Fish();
+        fish.setId(3L);
+
+        Hunting hunting = new Hunting();
+        hunting.setCompetition(competition);
+        hunting.setMember(member);
+        hunting.setFish(fish);
+
+        when(memberService.getMemberById(2L)).thenReturn(member);
+        when(fishService.getFishById(3L)).thenReturn(fish);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+        when(huntingRepository.findByCompetitionIdAndMemberIdAndFishId(1L, 2L, 3L)).thenReturn(hunting);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+
+        Hunting result = huntingService.addHuntingResult(hunting);
+        assertNull(result);
+
+    }
+
+    @Test
+    void testAddHuntingResult_MemberOrFishNotFound() {
+
+        Competition competition = new Competition();
+        competition.setId(1L);
+
+        Member member = new Member();
+        member.setId(2L);
+
+        Fish fish = new Fish();
+        fish.setId(3L);
+
+        Hunting hunting = new Hunting();
+        hunting.setCompetition(competition);
+        hunting.setMember(member);
+        hunting.setFish(fish);
+
+        when(memberService.getMemberById(2L)).thenReturn(null); // Simulate member not found
+        when(fishService.getFishById(3L)).thenReturn(fish);
+        Hunting result = huntingService.addHuntingResult(hunting);
+        assertNull(result);
+    }
+
+
 }

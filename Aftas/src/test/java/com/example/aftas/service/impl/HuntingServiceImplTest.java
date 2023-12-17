@@ -40,6 +40,34 @@ class HuntingServiceImplTest {
     @InjectMocks
     private HuntingServiceImpl huntingService;
 
+    @Test
+    void testAddHuntingResult_Successful() {
 
+        Competition competition = new Competition();
+        competition.setId(1L);
+
+        Member member = new Member();
+        member.setId(2L);
+
+        Fish fish = new Fish();
+        fish.setId(3L);
+
+        Hunting hunting = new Hunting();
+        hunting.setCompetition(competition);
+        hunting.setMember(member);
+        hunting.setFish(fish);
+
+        // Mock the behavior of the dependencies
+        when(memberService.getMemberById(2L)).thenReturn(member);
+        when(fishService.getFishById(3L)).thenReturn(fish);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+        when(huntingRepository.findByCompetitionIdAndMemberIdAndFishId(1L, 2L, 3L)).thenReturn(null);
+        when(rankingService.getRankingsByMemberIdAndCompetitionId(1L, 2L)).thenReturn(new Ranking());
+
+        // Call the method
+        Hunting result = huntingService.addHuntingResult(hunting);
+        assertNotNull(result);
+
+    }
 
 }

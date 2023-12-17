@@ -12,6 +12,6 @@ public interface CompetitionService {
     Competition addCompetition(Competition competition);
     Competition updateCompetition(Competition competition, Long id);
     void deleteCompetition(Long id);
-    List<Competition> getCompetitionsByEndTime();
+    List<Competition> findUpcomingCompetitions();
 
 }

@@ -114,17 +114,9 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     @Override
-    public List<Competition> getCompetitionsByEndTime() {
-        LocalTime currentTime = LocalTime.now();
-        LocalDate currentDate = LocalDate.now();
-
-        // Combine the current date with the current time to create LocalDateTime
-        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, currentTime);
-
-        // Now extract the LocalTime from the LocalDateTime
-        LocalTime currentLocalTime = currentDateTime.toLocalTime();
-
-        return competitionRepository.findByEndTimeBefore(currentLocalTime);
+    public List<Competition> findUpcomingCompetitions() {
+        LocalTime currentLocalTime = LocalTime.now();
+        return competitionRepository.findUpcomingCompetitions(currentLocalTime);
     }
 
 }

@@ -70,7 +70,7 @@ public class CompetitionController {
 
     @GetMapping("/upcoming")
     public ResponseEntity getUpcomingCompetitions() {
-        List<Competition> upcomingCompetitions = competitionService.getCompetitionsByEndTime();
+        List<Competition> upcomingCompetitions = competitionService.findUpcomingCompetitions();
         if (upcomingCompetitions.isEmpty()) {
             return ResponseMessage.notFound("No upcoming competitions found");
         } else {

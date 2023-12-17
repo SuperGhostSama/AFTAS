@@ -68,6 +68,14 @@ public class CompetitionController {
         competitionService.deleteCompetition(id);
     }
 
-
+    @GetMapping("/upcoming")
+    public ResponseEntity getUpcomingCompetitions() {
+        List<Competition> upcomingCompetitions = competitionService.getCompetitionsByEndTime();
+        if (upcomingCompetitions.isEmpty()) {
+            return ResponseMessage.notFound("No upcoming competitions found");
+        } else {
+            return ResponseMessage.ok(upcomingCompetitions, "Success");
+        }
+    }
 
 }

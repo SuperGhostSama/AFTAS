@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -109,6 +111,20 @@ public class CompetitionServiceImpl implements CompetitionService {
     public void deleteCompetition(Long id) {
         getCompetitionById(id);
         competitionRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Competition> getCompetitionsByEndTime() {
+        LocalTime currentTime = LocalTime.now();
+        LocalDate currentDate = LocalDate.now();
+
+        // Combine the current date with the current time to create LocalDateTime
+        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, currentTime);
+
+        // Now extract the LocalTime from the LocalDateTime
+        LocalTime currentLocalTime = currentDateTime.toLocalTime();
+
+        return competitionRepository.findByEndTimeBefore(currentLocalTime);
     }
 
 }

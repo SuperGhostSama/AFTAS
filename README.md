@@ -15,8 +15,8 @@ Before you start, make sure you have the following prerequisites installed on yo
 1. Clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/your-username/aftas-spring-boot-api.git
-    cd aftas-spring-boot-api
+    git clone https://github.com/SuperGhostSama/AFTAS-API.git
+    cd AFTAS-API
     ```
 
 2. Open the `application.properties` file in the `src/main/resources` directory.
